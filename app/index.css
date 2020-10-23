@@ -1,0 +1,30 @@
+body {
+    margin: 0;
+
+    height: 100vh;
+
+    display: grid;
+    grid-template-rows: 10% 80% 10%;
+
+    justify-items: center;
+}
+
+#matchPanel {
+    background-color: rgb(60, 71, 107);
+    width: 25%;
+    height: 50%;
+    display: flex;
+    margin: auto;
+
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#matchPanel input[type=button]{
+    width: 60%;
+}
+
+#matchPanel input[type=text]{
+    width: 40%;
+}

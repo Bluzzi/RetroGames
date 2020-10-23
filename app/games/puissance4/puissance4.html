@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./puissance4.css">
+    <title>Puissance 4</title>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src="./puissance4.js" type="text/javascript"></script>
+    <input type="button" value="New Game" onclick="test()">
+    <canvas id="game" width="470" height="405"></canvas>
+    <div id="columnsButtons">
+        <input type="button" value="1" onclick="send(0)"/>
+        <input type="button" value="2" onclick="send(1)"/>
+        <input type="button" value="3" onclick="send(2)"/>
+        <input type="button" value="4" onclick="send(3)"/>
+        <input type="button" value="5" onclick="send(4)"/>
+        <input type="button" value="6" onclick="send(5)"/>
+        <input type="button" value="7" onclick="send(6)"/>
+    </div>
+    <label id="winner">Who is the winner ?</label>
+    <input type="button" value="test" onclick="test()">
+</body>
+</html>

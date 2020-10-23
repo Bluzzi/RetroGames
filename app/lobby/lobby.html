@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./lobby.css">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src="./lobby.js" type="text/javascript"></script>
+    <label id="game"></label>
+    <div>
+        <label>Offline game</label>
+        <input type="button" value="Start game">
+    </div>
+    <div>
+        <label>Online game</label>
+        <input type="button" value="Play" onclick="game('random')"/>
+        <input type="button" value="Create game" onclick="game('create')"/>
+        <input type="button" value="Join game" onclick="game('join')">
+        <input type="text" name="gameID" id="roomID" placeholder="Room ID">
+    </div>
+</body>
+</html>
