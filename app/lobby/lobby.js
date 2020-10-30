@@ -27,8 +27,8 @@ function game(mod){
     }
 }
 
-SOCKET.on("loadGame", function(){
-    window.location.replace("../games/puissance4/puissance4.html");
+SOCKET.on("loadGame", function(game){
+    window.location.replace("../games/"+ game.toLowerCase() + "/"+ game.toLowerCase() + ".html");
 })
 
 SOCKET.on("game exists not", function(){

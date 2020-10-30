@@ -1,28 +1,67 @@
+const { Cookies } = require("electron");
+
 const SOCKET = io("http://localhost:3000");
 
 SOCKET.on("connect", function(){
     SOCKET.emit("userID", sessionStorage.getItem("userID"));
+    SOCKET.emit("setReady", sessionStorage.getItem("userID"));
 });
 
-function send(data){
-    data = data.toString();
-    SOCKET.emit("gameData", data);
-}
+SOCKET.on("gameData", function(data){
+    grid = data["grid"];
+    if(data["colors"])colors=data["colors"];
+    let column;
+    if(Object.keys(data).includes("column")) column=data["column"];
 
-SOCKET.on("draw", function(_grid, _column, _player){
-    grid = _grid;
-    player = _player;
-    addCoin(_column);
+    player = data["currentPlayer"]; 
+    if(player == sessionStorage.getItem("userID")) enableButtons();
+    else disableButtons();
+
+    addCoin(column);
 });
 
 SOCKET.on("end", function(_player){
-    document.getElementById("winner").textContent += player ? "Joueur Rouge" : "Joueur Bleu";
+    document.getElementById("winner").textContent = _player == sessionStorage.getItem("userID") ?  "Vous avez gagné !" : "Vous avez perdu";
 });
 
-// Client
-let grid = [[],[],[],[],[],[],[]];
-let player = true;
+function send(data){
+    SOCKET.emit("gameData", data);
+}
 
+function menu(){
+    window.location.replace("../../index.html");
+}
+
+// Client
+let grid;
+let player;
+let colors;
+
+function addCoin(column){
+    var canvas = document.getElementById("game");
+    var ctx = canvas.getContext("2d");
+
+    if(column==undefined) return drawGrid();
+    let j = 0;
+    let inter = setInterval(()=>{
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        
+        ctx.fillStyle = colors[Object.keys(colors).find(x => x != player)];
+
+        ctx.beginPath();
+        ctx.arc(40 + 65 * column, 0 + 1 * j, 30, 0, Math.PI*2, false);
+        ctx.fill();
+
+        drawGrid();
+        drawCoins();
+
+        j+=2
+        if(j > canvas.clientHeight - 40 - 65 * grid[column].length){
+            clearInterval(inter);
+        }
+    })   
+}
 
 function drawGrid(){
     var canvas = document.getElementById("game");
@@ -36,10 +75,15 @@ function drawGrid(){
             ctx.stroke();
         }
     }
+}
+
+function drawCoins(){
+    var canvas = document.getElementById("game");
+    var ctx = canvas.getContext("2d");
 
     for(let column = 0; column < grid.length; column++){
         for(let row = 0; row < grid[column].length; row++){
-            ctx.fillStyle = grid[column][row] ? "#FF0000" : "#0000FF";
+            ctx.fillStyle = colors[grid[column][row]];
             ctx.beginPath();
             ctx.arc(40 + 65 * column, canvas.clientHeight - 40 - 65 * row, 30, 0, Math.PI*2, false);
             ctx.fill();
@@ -47,38 +91,16 @@ function drawGrid(){
     }
 }
 
-function addCoin(column){
-    toggleButtonsEnability();
-
-    var canvas = document.getElementById("game");
-    var ctx = canvas.getContext("2d");
-
-    let j = 0
-    let inter = setInterval(()=>{
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        ctx.fillStyle = player ? "#FF0000" : "#0000FF"; // Red || Blue
-
-        ctx.beginPath();
-        ctx.arc(40 + 65 * column, 0 + 1 * j, 30, 0, Math.PI*2, false);
-        ctx.fill();
-
-        drawGrid();
-
-        j+=2
-        if(j > canvas.clientHeight - 40 - 65 * grid[column].length){
-            clearInterval(inter);
-            toggleButtonsEnability();
-            player = !player;
-        }
-    })   
-}
-
-function toggleButtonsEnability(){
+function disableButtons(){
     let children = document.getElementById("columnsButtons").children;
     for(let child = 0; child < children.length; child++){
-        if(grid[child].length < 6)children[child].toggleAttribute("disabled");
+        if(grid[child].length < 6)children[child].setAttribute("disabled","true");
     }
 }
 
-window.onload = drawGrid;
+function enableButtons(){
+    let children = document.getElementById("columnsButtons").children;
+    for(let child = 0; child < children.length; child++){
+        if(grid[child].length < 6)children[child].removeAttribute("disabled");
+    }
+}

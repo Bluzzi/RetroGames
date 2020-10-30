@@ -1,6 +1,7 @@
 const GAME = require("./Game");
 
-const games = {"Puissance 4":"Puissance4","Snake":"Snake"}
+const games = {"Puissance 4":"Puissance4", "Snake":"Snake", "Blasters":"Blasters"};
+
 
 class GameManager{
     #games;
@@ -15,29 +16,43 @@ class GameManager{
     create(gameType, userID){
         let gameID = generateID();
         console.log("Game ID : " + gameID);
-
-        this.#games[gameID] = new (require("../games/" + games[gameType]))(gameType, this.#io, gameID);
+        this.#games[gameID] = new (require("../games/" + games[gameType]))(games[gameType], this.#io, gameID);
         this.#games[gameID].add_player(userID);
-        console.log(this.#games[gameID].io)
         return gameID;
     }
 
-    join(gameID, userID){
+    async delete(gameID, userID){
+        delete this.#games[gameID];
+    }
+
+    async join(gameID, userID){
         if(this.#games[gameID]) {
             this.#games[gameID].add_player(userID);
             return true;
         } else {
-            this.#io.sockets.connected[SERVER.get_socket(userID)].emit("game exists not");
             return false;
         }
     }
 
-    random(gameType){
-        
+    random(gameType, userID){
+        if(!this.#randomGames[gameType]){
+            let gameID = generateID();    
+            this.#randomGames[gameType] = new (require("../games/" + games[gameType]))(games[gameType], this.#io, gameID);
+        }
+        let gameID = this.#randomGames[gameType].gameID;
+        if(this.#randomGames[gameType].add_player(userID)){
+            this.#games[this.#randomGames[gameType].gameID] = this.#randomGames[gameType];
+            delete this.#randomGames[gameType];
+        }
+        return gameID;
     }
 
-    play_game(gameID, data){
-        this.#games[gameID].play_game(data);
+    async set_ready(gameID, userID){
+        this.#games[gameID].set_ready(userID);
+    }
+
+    async play_game(gameID, userID, data){
+        this.#games[gameID].play_game(userID, data);
     }
 }
 

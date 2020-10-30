@@ -9,8 +9,12 @@ class GameName extends Game {
 
     }
 
-    play_game(){
+    start_game(){
+        
+    }
 
+    play_game(userID, data){
+        // Edit in child class
     }
 }
 

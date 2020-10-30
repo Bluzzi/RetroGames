@@ -1,6 +1,6 @@
 import os
 import shutil
-d=r"C:\Users\lmgd\Documents\ElectronApps\LowGamesApp"
+d=r"C:\Users\lmgd\Documents\GitHub\LowGamesApp"
 name=input("Game Name : ")
 file=d+fr"\server\games\{name}.js"
 shutil.copy(d + r"\templates\GameName.js", file)

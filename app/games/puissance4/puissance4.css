@@ -1,15 +1,15 @@
 body {
     margin: 0;
+    background-color: #6b74d3;
 
     height: 100vh;
-
-    display: grid;
-
-    grid-template-rows: auto 40;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
 }
 
 #game {
-    grid-row: 1;
     border: 1px black solid;
 }
